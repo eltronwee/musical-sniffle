@@ -1,0 +1,31 @@
+name: Build APK
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Descargar código
+      uses: actions/checkout@v4
+      
+    - name: Descargar Godot
+      run: |
+        wget -q https://github.com/godotengine/godot/releases/download/4.4.1-stable/Godot_v4.4.1-stable_linux.x86_64.zip
+        unzip -q Godot_v4.4.1-stable_linux.x86_64.zip
+        chmod +x Godot_v4.4.1-stable_linux.x86_64
+        
+    - name: Crear APK desde fnf-2-try
+      run: |
+        cd fnf-2-try
+        ../Godot_v4.4.1-stable_linux.x86_64 --headless --export-debug "Android" ../fnf_game.apk
+        
+    - name: Subir APK para descargar
+      uses: actions/upload-artifact@v4
+      with:
+        name: Musical-Sniffle-APK
+        path: fnf_game.apk
