@@ -12,20 +12,26 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      # REVERTIR: Volvemos a la acción que SÍ existe y conocemos
-      - name: Setup Godot
-        uses: firebelley/godot-export@v4.0.0 # Versión estable y funcional
-        with:
-          # Especificamos las URLs de descarga correctas para Godot 4.2.1
-          godot_executable_download_url: 'https://github.com/godotengine/godot/releases/download/4.2.1-stable/Godot_v4.2.1-stable_linux.x86_64.zip'
-          godot_export_templates_download_url: 'https://github.com/godotengine/godot/releases/download/4.2.1-stable/Godot_v4.2.1-stable_export_templates.tpz'
-          # ¡No olvidar la ruta a tu proyecto!
-          relative_project_path: 'fnf-2n-try'
+      - name: Download Godot Executable
+        # Descargamos el ejecutable directamente con wget y lo renombramos
+        run: |
+          mkdir -p ~/.local/share/godot
+          wget -O ~/.local/share/godot/Godot_v4.2.1-stable_linux.x86_64.zip https://github.com/godotengine/godot/releases/download/4.2.1-stable/Godot_v4.2.1-stable_linux.x86_64.zip
+          unzip -j ~/.local/share/godot/Godot_v4.2.1-stable_linux.x86_64.zip 'Godot_v4.2.1-stable_linux.x86_64' -d ~/.local/share/godot/
+          chmod +x ~/.local/share/godot/Godot_v4.2.1-stable_linux.x86_64
+
+      - name: Download Export Templates
+        # Descargamos las plantillas de exportación para Android
+        run: |
+          wget -O ~/.local/share/godot/templates.zip https://github.com/godotengine/godot/releases/download/4.2.1-stable/Godot_v4.2.1-stable_export_templates.tpz
+          mkdir -p ~/.local/share/godot/export_templates
+          unzip ~/.local/share/godot/templates.zip -d ~/.local/share/godot/export_templates/
 
       - name: Export Android APK
+        # Llamamos directamente al ejecutable que descargamos
         run: |
           cd fnf-2n-try
-          godot --headless --export-release "Android" "MusicalSniffle.apk"
+          ~/.local/share/godot/Godot_v4.2.1-stable_linux.x86_64 --headless --export-release "Android" "MusicalSniffle.apk"
 
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
