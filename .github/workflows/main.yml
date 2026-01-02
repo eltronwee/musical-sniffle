@@ -12,18 +12,22 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      # ¡CORRECCIÓN AQUÍ! Un solo guión, y 'uses' alineado con 'name'.
       - name: Setup Godot
-        uses: firebelley/godot-export@v5.0.0
+        uses: firebelley/godot-export@v4.0.0 # ¡Versión corregida y probada!
         with:
-          godot_version: '4.2.1-stable'
+          # Especifica la versión de Godot 4.2.1 para Linux
+          godot_executable_download_url: 'https://github.com/godotengine/godot/releases/download/4.2.1-stable/Godot_v4.2.1-stable_linux.x86_64.zip'
+          # ¡ESTO ES CLAVE! La ruta a tu proyecto dentro del repo.
+          relative_project_path: 'fnf-2n-try'
 
       - name: Export Android APK
         run: |
+          # Asegúrate de que el comando se ejecute DESDE la carpeta del proyecto
+          cd fnf-2n-try
           godot --headless --export-release "Android" "MusicalSniffle.apk"
 
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
           name: MusicalSniffle-APK
-          path: MusicalSniffle.apk
+          path: fnf-2n-try/MusicalSniffle.apk # ¡Sube el APK desde la carpeta correcta!
