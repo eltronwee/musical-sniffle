@@ -25,10 +25,14 @@ jobs:
           cp -r ~/temp_templates/templates/* ~/.local/share/godot/export_templates/4.2.1.stable/
           ls -la ~/.local/share/godot/export_templates/4.2.1.stable/android_*
 
+      # ¡PASO CORREGIDO AQUÍ! Nota la sangría correcta (6 espacios desde el margen)
       - name: Export Android APK
         run: |
           cd fnf-2n-try
-          ~/.local/share/godot/Godot_v4.2.1-stable_linux.x86_64 --headless --export-release "Android" "MusicalSniffle.apk"
+          # Comando que fuerza el paquete
+          ~/.local/share/godot/Godot_v4.2.1-stable_linux.x86_64 --headless \
+            --export-release "Android" "MusicalSniffle.apk" \
+            --export-option "application/package/unique_name" "com.eltron111.musicalsniffle.app"
 
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
